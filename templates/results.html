@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Analysis Results</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f9;
+    }
+    .header {
+      position: sticky;
+      top: 0;
+      background: white;
+      padding: 1rem;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+    }
+    .container {
+      padding: 2rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    h1, h2 {
+      color: #333;
+    }
+    .result-item {
+      margin-bottom: 1rem;
+    }
+    ul {
+      padding-left: 1rem;
+    }
+    .error {
+      color: red;
+      font-weight: bold;
+    }
+    .back-link {
+      display: inline-block;
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      background-color: #007BFF;
+      color: white;
+      text-decoration: none;
+      border-radius: 4px;
+    }
+    .back-link:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Analysis Results for {{.URL}}</h1>
+  </div>
+  <div class="container">
+    {{if .Error}}
+      <p class="error"><strong>Error:</strong> {{.Error}}</p>
+    {{else}}
+      <div class="result-item">
+        <strong>HTML Version:</strong> {{.HTMLVersion}}
+      </div>
+      <div class="result-item">
+        <strong>Title:</strong> {{.Title}}
+      </div>
+      <div class="result-item">
+        <strong>Headings:</strong>
+        <ul>
+          {{range $level, $headings := .HeadingTexts}}
+            {{range $heading := $headings}}
+              <li>{{$heading}} (Level: {{$level}})</li>
+            {{end}}
+          {{end}}
+        </ul>
+      </div>
+      <div class="result-item">
+        <strong>Internal Links:</strong> {{.InternalLinks}}
+        <ul>
+          {{range .InternalLinksList}}
+            <li><a href="{{.}}" target="_blank">{{.}}</a></li>
+          {{end}}
+        </ul>
+      </div>
+      <div class="result-item">
+        <strong>External Links:</strong> {{.ExternalLinks}}
+        <ul>
+          {{range .ExternalLinksList}}
+            <li><a href="{{.}}" target="_blank">{{.}}</a></li>
+          {{end}}
+        </ul>
+      </div>
+      <div class="result-item">
+        <strong>Inaccessible Links:</strong> {{.InaccessibleLinks}}
+      </div>
+      <div class="result-item">
+        <strong>Has Login Form:</strong> {{.HasLoginForm}}
+      </div>
+    {{end}}
+    <a class="back-link" href="/">Go back</a>
+  </div>
+</body>
+</html>

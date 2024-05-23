@@ -1,0 +1,6 @@
+Logger:
+  Level: "info"
+
+HTTPServer:
+  Port: 8080
+  Host: "0.0.0.0"
