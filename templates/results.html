@@ -66,7 +66,7 @@
       <div class="result-item">
         <strong>Headings:</strong>
         <ul>
-          {{range $level, $headings := .HeadingTexts}}
+          {{range $level, $headings := .HeadingTagToTexts}}
             {{range $heading := $headings}}
               <li>{{$heading}} (Level: {{$level}})</li>
             {{end}}
@@ -74,23 +74,23 @@
         </ul>
       </div>
       <div class="result-item">
-        <strong>Internal Links:</strong> {{.InternalLinks}}
+        <strong>Internal Links:</strong> {{.InternalLinksNum}}
         <ul>
-          {{range .InternalLinksList}}
+          {{range .InternalLinks}}
             <li><a href="{{.}}" target="_blank">{{.}}</a></li>
           {{end}}
         </ul>
       </div>
       <div class="result-item">
-        <strong>External Links:</strong> {{.ExternalLinks}}
+        <strong>External Links:</strong> {{.ExternalLinksNum}}
         <ul>
-          {{range .ExternalLinksList}}
+          {{range .ExternalLinks}}
             <li><a href="{{.}}" target="_blank">{{.}}</a></li>
           {{end}}
         </ul>
       </div>
       <div class="result-item">
-        <strong>Inaccessible Links:</strong> {{.InaccessibleLinks}}
+        <strong>Inaccessible Links:</strong> {{.InaccessibleLinksNum}}
       </div>
       <div class="result-item">
         <strong>Has Login Form:</strong> {{.HasLoginForm}}

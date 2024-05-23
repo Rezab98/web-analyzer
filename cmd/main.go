@@ -12,9 +12,9 @@ import (
 
 	"github.com/sirupsen/logrus"
 
-	"github.com/Rezab98/web-analyzer/internal/analyzer"
+	"github.com/Rezab98/web-analyzer/internal/pageanalyzer"
+	"github.com/Rezab98/web-analyzer/internal/pagedownloader"
 	"github.com/Rezab98/web-analyzer/internal/server"
-	"github.com/Rezab98/web-analyzer/pkg/pagedownloader"
 )
 
 // The main function is the entry point of the application.
@@ -39,16 +39,16 @@ func run() error {
 		return fmt.Errorf("can not configure logger: %v", err)
 	}
 
-	pageDownloader := pagedownloader.New()
-
-	pageAnalyzerService := analyzer.New(pageDownloader)
+	pageDownloader := pagedownloader.New(http.DefaultClient)
+	pageAnalyzer := pageanalyzer.New(http.DefaultClient)
 
 	httpServer := server.New(
 		&server.Config{
 			Port: cfg.HTTPServer.Port,
 			Host: cfg.HTTPServer.Host,
 		},
-		pageAnalyzerService,
+		pageDownloader,
+		pageAnalyzer,
 	)
 
 	// Create a context that will be canceled on shutdown signals

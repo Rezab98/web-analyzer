@@ -6,7 +6,8 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"github.com/Rezab98/web-analyzer/internal/analyzer"
+	"github.com/Rezab98/web-analyzer/internal/pageanalyzer"
+	"github.com/Rezab98/web-analyzer/internal/pagedownloader"
 )
 
 type Config struct {
@@ -15,11 +16,11 @@ type Config struct {
 }
 
 // New creates a new HTTP server and sets up the routes.
-func New(cfg *Config, pageAnalyzer *analyzer.WebpageAnalyzer) *http.Server {
+func New(cfg *Config, pageDownload *pagedownloader.SimpleWebPageDownloader, pageAnalyzer *pageanalyzer.WebpageAnalyzer) *http.Server {
 
 	router := mux.NewRouter()
 
-	analyzerHandler := NewAnalyzerHandler(pageAnalyzer)
+	analyzerHandler := NewAnalyzerHandler(pageAnalyzer, pageDownload)
 
 	// Set up the routes
 	router.HandleFunc("/", analyzerHandler.showForm).Methods(http.MethodGet)
