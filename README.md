@@ -8,7 +8,7 @@ This application analyzes web pages, extracting key information like titles, hea
 - [Building and Running](#building-and-running)
 - [Project Structure](#project-structure)
 - [Design Processes and Decisions](#design-processes-and-decisions)
-- [Suggested Improvements](#suggested-iprovements)
+- [Suggested Future Improvements](#suggested-future-iprovements)
 
 ## Features
 
@@ -31,8 +31,6 @@ Try the Web Analyzer without installing anything: [http://161.97.64.34:8080/](ht
 
 - Go (version 1.20 or higher)
 - Docker (optional, for containerized development)
-
-
 
 ### Local Development
 
@@ -133,7 +131,7 @@ The handler is responsible for handling the incoming requests and generating the
 
 ### Internal Link Definition
 
-In the current implementation, an internal link is defined as a link with exactly the same host as the original URL. This decision was made to simplify the logic and provide a clear distinction between internal and external links. For example, if the entered URL is `https://example.com`, then `https://example.com/temp` and `https://www.example.com` are considered internal links, while `https://example.org` and `https://sub.example.com` are considered external links.
+In the current implementation, an internal link is defined as a link with exactly the same host as the original URL. This decision was made to simplify the logic and provide a clear distinction between internal and external links. For example, if the entered URL is `https://example.com`, then `https://example.com/temp` and `https://www.example.com/temp` are considered internal links, while `https://example.org` and `https://sub.example.com` are considered external links.
 
 ### Concurrent Inaccessible Link Counting
 
@@ -141,7 +139,7 @@ Initially, the logic for counting inaccessible links was implemented sequentiall
 
 ### Static HTML Rendering
 
-During development, it was observed that for some URLs, the HTML rendering is dynamic, and the simple downloader only retrieves the initial static HTML. To handle such URLs properly, a page downloader that uses a headless browser (like chromedp) would be needed to fetch the complete HTML. However, for the sake of simplicity, the decision was made to stick with the simple webpage downloader for now. In the future, adding a more advanced downloader alongside the simple one and providing a configuration option to choose which downloader to use based on the specific requirements can be considered.
+During development, it was observed that for some URLs, the HTML rendering is dynamic, and the simple downloader only retrieves the initial static HTML. To handle such URLs properly, a page downloader that uses a headless browser (like [chromedp](https://github.com/chromedp/chromedp)) would be needed to fetch the complete HTML. However, for the sake of simplicity, the decision was made to stick with the simple webpage downloader for now. In the future, adding a more advanced downloader alongside the simple one and providing a configuration option to choose which downloader to use based on the specific requirements can be considered.
 
 ### Error Handling
 
