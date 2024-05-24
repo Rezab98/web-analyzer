@@ -160,7 +160,7 @@ Here are some suggested future improvements for the Web Analyzer application:
 - Implement concurrent page downloading in the `pagedownloader` package to enhance performance.
 - Provide separate static and dynamic page downloaders and choose the appropriate one based on configuration.
 - Handle more specific status codes when passing errors from the downloader to the handler for better error reporting.
-- Expand test coverage by adding tests for the `pageanalyzer` and `pagedownloader` packages, utilizing test HTTP clients.
+- Expand test coverage by adding tests for the `server/hanlder` and `pageanalyzer` and `pagedownloader` packages, utilizing test HTTP clients.
 - Accept template and configuration file paths as command-line arguments to the binary, instead of hardcoding them in the code.
 - Enhance the user interface and create more sophisticated templates for an improved user experience.
 
