@@ -25,7 +25,7 @@ The Web Analyzer provides the following insights about a given web page:
 
 ### Quick Start (Hosted Instance)
 
-Try the Web Analyzer without installing anything: [http://38.60.202.167:8080/](http://38.60.202.167:8080/)
+Try the Web Analyzer without installing anything: [http://154.12.255.134:8080/](http://154.12.255.134:8080/)
 
 ### Prerequisites
 
