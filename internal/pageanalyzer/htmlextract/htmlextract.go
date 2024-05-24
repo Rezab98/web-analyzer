@@ -8,8 +8,7 @@ import (
 )
 
 type HTMLExtractor struct {
-	pageContent []byte
-	goQueryDoc  *goquery.Document
+	goQueryDoc *goquery.Document
 }
 
 func New(htmlContent []byte) (*HTMLExtractor, error) {
@@ -18,5 +17,5 @@ func New(htmlContent []byte) (*HTMLExtractor, error) {
 		return nil, fmt.Errorf("goquery new document from reader failed: %v", err)
 	}
 
-	return &HTMLExtractor{pageContent: htmlContent, goQueryDoc: goQueryDoc}, nil
+	return &HTMLExtractor{goQueryDoc: goQueryDoc}, nil
 }
