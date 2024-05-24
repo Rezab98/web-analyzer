@@ -50,7 +50,7 @@ go run ./cmd/
 ### Build and Run Executable
 
 ```bash
-go build ./cmd/
+go build -o ./web-analyzer ./cmd
 ./web-analyzer
 ```
 ### Docker (Optional)
