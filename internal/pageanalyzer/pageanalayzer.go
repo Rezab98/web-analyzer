@@ -1,9 +1,11 @@
 package pageanalyzer
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"net/http"
+	"net/url"
 	"strings"
 	"sync"
 	"time"
@@ -41,11 +43,14 @@ func (w *WebpageAnalyzer) Analyze(ctx context.Context, pageURL string, pageConte
 	}
 
 	// Extracts information from the HTML document
-	htmlVersion := htmlExtractor.HTMLVersion()
+	htmlVersion := HTMLVersion(pageContent)
 	title := htmlExtractor.Title()
 	headingTagToTexts := htmlExtractor.HeadingTagToTexts()
 	hasLoginForm := htmlExtractor.HasLoginForm()
-	allLinks := htmlExtractor.Links()
+	allLinks, err := resolveRelativeLinks(htmlExtractor.Links(), pageURL)
+	if err != nil {
+		logrus.WithError(err).Error("resolveRelativeLinks failed")
+	}
 
 	// Get inaccessible links number
 	inaccessibleLinksNum := w.CountInaccessibleLinks(ctx, allLinks)
@@ -73,6 +78,43 @@ func (w *WebpageAnalyzer) Analyze(ctx context.Context, pageURL string, pageConte
 		InaccessibleLinksNum: inaccessibleLinksNum,
 		HasLoginForm:         hasLoginForm,
 	}, nil
+}
+
+func HTMLVersion(pageContent []byte) string {
+	// Read only the first 1024 bytes to identify the doctype and root elements
+
+	// Helper function to get the minimum of two integers
+	min := func(a, b int) int {
+		if a < b {
+			return a
+		}
+		return b
+	}
+
+	initialContent := bytes.ToLower(pageContent[:min(len(pageContent), 1024)])
+
+	// Convert the relevant portion to a string for easier processing
+	initialContentStr := string(initialContent)
+
+	// Check for HTML5 doctype
+	if strings.Contains(initialContentStr, "<!doctype html>") {
+		return "HTML5"
+	}
+
+	// Check for XHTML doctypes
+	if strings.Contains(initialContentStr, `<!doctype html public "-//w3c//dtd xhtml 1.0`) {
+		return "XHTML 1.0"
+	}
+	if strings.Contains(initialContentStr, `<!doctype html public "-//w3c//dtd xhtml 1.1`) {
+		return "XHTML 1.1"
+	}
+
+	// Check for older HTML versions
+	if strings.Contains(initialContentStr, "<html>") || strings.Contains(initialContentStr, "<html ") {
+		return "HTML4 or Earlier"
+	}
+
+	return "Unknown"
 }
 
 // CountInaccessibleLinks sends concurrent HEAD requests to each link and returns the count of inaccessible links.
@@ -135,5 +177,47 @@ func (w *WebpageAnalyzer) isLinkAccessible(ctx context.Context, link string) boo
 }
 
 func isInternalLink(href, baseURL string) bool {
-	return strings.HasPrefix(href, baseURL) || !strings.HasPrefix(href, "http")
+	base, err := url.Parse(baseURL)
+	if err != nil {
+		logrus.Errorf("Error parsing baseURL: %v", err)
+		return false
+	}
+
+	link, err := url.Parse(href)
+	if err != nil {
+		logrus.Errorf("Error parsing baseURL: %v", err)
+		return false
+	}
+
+	// Remove www prefix from the href's host for comparison
+	linkHost := strings.TrimPrefix(link.Host, "www.")
+
+	// Compare the host of the base URL and the resolved URL
+	return base.Host == linkHost
+}
+
+// resolveRelativeLinks converts all relative links to absolute links based on the base URL's host.
+func resolveRelativeLinks(links []string, baseURL string) ([]string, error) {
+	// Parse the base URL
+	base, err := url.Parse(baseURL)
+	if err != nil {
+		return nil, fmt.Errorf("error parsing baseURL: %v", err)
+	}
+
+	var resolvedLinks []string
+	for _, link := range links {
+		parsedLink, err := url.Parse(link)
+		if err != nil {
+			logrus.Errorf("resolveRelativeLinks: error parsing link: %v", err)
+			continue
+		}
+		resolvedLink := link
+		if !parsedLink.IsAbs() {
+			resolvedLink = base.ResolveReference(parsedLink).String()
+		}
+		resolvedLinks = append(resolvedLinks, resolvedLink)
+
+	}
+
+	return resolvedLinks, nil
 }

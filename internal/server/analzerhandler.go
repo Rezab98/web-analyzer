@@ -163,12 +163,14 @@ func validateURL(urlStr string) (string, error) {
 
 // handleHTTPError wil return proper http error on the responseWriter and log error with request scope information
 func handleHTTPError(w http.ResponseWriter, r *http.Request, msg string, statusCode int, causeErr error) {
-	logrus.WithError(causeErr).WithFields(logrus.Fields{
-		"path":         r.URL.Path,
-		"method":       r.Method,
-		"responseCode": statusCode,
-		"responseMsg":  msg,
-	}).Error("request failed")
+	if causeErr != nil || statusCode == http.StatusInternalServerError {
+		logrus.WithError(causeErr).WithFields(logrus.Fields{
+			"path":         r.URL.Path,
+			"method":       r.Method,
+			"responseCode": statusCode,
+			"responseMsg":  msg,
+		}).Error("request failed")
+	}
 
-	http.Error(w, msg, statusCode)
+	http.Error(w, fmt.Sprintf("Error: %q", msg), statusCode)
 }
