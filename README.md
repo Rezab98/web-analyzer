@@ -8,7 +8,7 @@ This application analyzes web pages, extracting key information like titles, hea
 - [Building and Running](#building-and-running)
 - [Project Structure](#project-structure)
 - [Design Processes and Decisions](#design-processes-and-decisions)
-- [Suggested Future Improvements](#suggested-future-iprovements)
+- [Suggested Future Improvements](#suggested-future-improvements)
 
 ## Features
 
